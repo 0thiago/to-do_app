@@ -1,6 +1,8 @@
+import React, { useState } from "react"
 import styled from "styled-components"
 import TaskHeader from "./TaskHeader"
 import TaskList from "./TaskList"
+import NewTaskModal from "../UI/NewTaskModal"
 
 const TaskListCard = styled.div`
   background-color: #FAFAFA;
@@ -15,12 +17,24 @@ const TaskListCard = styled.div`
 `
 
 const TasksCard = props => {
+  const [modalIsVisible, setModalIsVisible] = useState(false)
+
+  const onDropHandler = () => {
+    setModalIsVisible(true)
+  }
+
+  const closeModalHandler = () => {
+    setModalIsVisible(false)
+  }
 
   return (
-    <TaskListCard>
-      <TaskHeader title={props.title}/>
-      <TaskList type={props.type}/>
-    </TaskListCard>
+    <>
+      <TaskListCard onDrop={onDropHandler}>
+        <TaskHeader title={props.title}/>
+        <TaskList type={props.type}/>
+      </TaskListCard>
+      {modalIsVisible && <NewTaskModal closeModal={closeModalHandler}/>}
+    </>
   )
 }
 

@@ -12,10 +12,14 @@ const Div = styled.div`
   width: 370px;
   margin: 0 auto 40px;
   box-shadow: 0 30px 30px #00000015;
+
+  &:hover {
+    cursor: pointer;
+  }
 `
 const NewTask = () => {
   return (
-    <Div>
+    <Div draggable>
       <Indicator type='default' />
       <p>Start dragging this task to create a new one</p>
     </Div>

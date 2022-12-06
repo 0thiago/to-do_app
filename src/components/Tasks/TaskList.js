@@ -11,11 +11,13 @@ const Ul = styled.ul`
 
 const Div = styled.div`
   display: ${(props) => (props.visible === true ? "block" : "none")};
-`
+`  
 
 const TaskList = (props) => {
+  const listFromStorage = JSON.parse(localStorage.getItem("tasks"))
+
   const [selected, setSelected] = useState(null)
-  const [taskList, setTaskList] = useState([])
+  const [taskList, setTaskList] = useState(listFromStorage)
 
   const toggle = (i) => {
     if (selected === i) {
@@ -38,8 +40,8 @@ const TaskList = (props) => {
 
   useEffect(() => {
     const stringifiedTasks = JSON.stringify(taskList)
-    console.log(taskList)
     localStorage.setItem("tasks", stringifiedTasks)
+    console.log(taskList)
   }, [taskList])
 
   const discardHandler = (item) => {
@@ -47,42 +49,18 @@ const TaskList = (props) => {
     setTaskList((prevState) =>
       prevState.filter((task) => task.name !== item.taskName)
     )
+    setSelected(null)
   }
 
-  let filteredTasks = [];
-  if (props.type === 'todo') {
-      filteredTasks = taskList.filter(task => task.status === 'todo');
-  } else if (props.type === 'inProgress') {
-      filteredTasks = taskList.filter(task => task.status === 'inProgress');
+  let filteredTasks = []
+
+  if (props.type === "todo") {
+    filteredTasks = taskList.filter((task) => task.status === "todo")
+  } else if (props.type === "inProgress") {
+    filteredTasks = taskList.filter((task) => task.status === "inProgress")
   } else {
-      filteredTasks = taskList.filter(task => task.status === 'done');
+    filteredTasks = taskList.filter((task) => task.status === "done")
   }
-
-  // let filteredTasks = []
-
-  // if (props.type === "todo") {
-  //   filteredTasks = taskList.filter((task) => task.status === "todo")
-  // } else if (props.type === "inProgress") {
-  //   filteredTasks = taskList.filter((task) => task.status === "inProgress")
-  // } else {
-  //   filteredTasks = taskList.filter((task) => task.status === "done")
-  // }
-
-  // let taskList = []
-
-  // let taskListFromStorage = JSON.parse(localStorage.getItem("tasks"))
-
-  // const discardHandler = (item) => {
-  //   item.button.preventDefault()
-
-  //   taskListFromStorage = taskListFromStorage.filter(
-  //     (task) => task.name !== item.taskName
-  //   )
-
-  //   let taskListFromStorageJSON = JSON.stringify(taskListFromStorage)
-
-  //   localStorage.setItem("tasks", taskListFromStorageJSON)
-  // }
 
   return (
     <Ul>

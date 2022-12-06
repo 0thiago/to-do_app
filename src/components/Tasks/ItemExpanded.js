@@ -1,8 +1,7 @@
-import React, { useContext } from "react"
+import React from "react"
 import Button from "../UI/Button"
 import Indicator from "../Layout/Indicator"
 import styled from "styled-components"
-import TaskListContext from "../../context/taskList-context"
 
 const ItemExpandedContainer = styled.div`
   display: flex;
@@ -69,7 +68,6 @@ const BtnContainer = styled.div`
 `
 
 const ItemExpanded = (props) => {
-  const context = useContext(TaskListContext)
 
   const onDiscardHandler = (button) => {
     props.onDiscard({
@@ -77,7 +75,6 @@ const ItemExpanded = (props) => {
       button: button,
     })
   }
-
 
   const saveHandler = (e) => {
     e.preventDefault()
