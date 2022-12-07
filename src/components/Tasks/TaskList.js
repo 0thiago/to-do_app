@@ -11,13 +11,17 @@ const Ul = styled.ul`
 
 const Div = styled.div`
   display: ${(props) => (props.visible === true ? "block" : "none")};
-`  
+`
 
 const TaskList = (props) => {
-  const listFromStorage = JSON.parse(localStorage.getItem("tasks"))
+  // let listFromStorage = JSON.parse(localStorage.getItem("tasks"))
 
   const [selected, setSelected] = useState(null)
-  const [taskList, setTaskList] = useState(listFromStorage)
+  const [tasksToDo, setTasksToDo] = useState([])
+  const [tasksInProgress, setTasksInProgress] = useState([])
+  const [tasksDone, setTasksDone] = useState([])
+
+  
 
   const toggle = (i) => {
     if (selected === i) {
@@ -29,40 +33,150 @@ const TaskList = (props) => {
 
   useEffect(() => {
     let storedItems = localStorage.getItem("tasks")
+
     try {
       storedItems = JSON.parse(storedItems)
-      setTaskList(storedItems)
+      setTasksToDo(storedItems.filter((task) => task.status === "todo"))
+      
+
     } catch {
       // localStorage.removeItem("tasks")
       console.log("erro")
     }
+
+    console.log(tasksToDo)
   }, [])
 
-  useEffect(() => {
-    const stringifiedTasks = JSON.stringify(taskList)
-    localStorage.setItem("tasks", stringifiedTasks)
-    console.log(taskList)
-  }, [taskList])
+  // useEffect(() => {
+  //   // listFromStorage = taskList
+  //   const stringifiedTasks = JSON.stringify(taskList)
+  //   localStorage.setItem("tasks", stringifiedTasks)
+  //   console.log("localStorage Updated")
+  // }, [taskList])
 
-  const discardHandler = (item) => {
-    item.button.preventDefault()
-    setTaskList((prevState) =>
-      prevState.filter((task) => task.name !== item.taskName)
-    )
+  // const discardHandler = (item) => {
+  //   item.button.preventDefault()
+
+  //   setTaskList((prevState) =>
+  //     prevState.filter((task) => task.name !== item.taskName)
+  //   )
+
+  //   const stringifiedTasks = JSON.stringify(taskList)
+  //   localStorage.setItem("tasks", stringifiedTasks)
+  //   console.log("localStorage Updated")
+
+  //   setSelected(null)
+  // }
+
+  const sortByID = (a, b) => {
+    if (a.id === b.id) {
+      return 0
+    }
+    return a.id - b.id
+  }
+
+  // const saveHandler = (item) => {
+  //   item.button.preventDefault()
+
+  //   setTaskList((prevState) => {
+  //     if (taskList.some((task) => task.id === item.taskId)) {
+  //       return [
+  //         {
+  //           name: item.taskName,
+  //           description: item.taskDescription,
+  //           status: item.taskStatus,
+  //           id: taskList.length + 1,
+  //         },
+  //         ...prevState,
+  //       ].sort(sortByID)
+  //     }
+  //   })
+
+  //   //UPDATE:
+  //   // if (taskList.some((task) => task.id === item.taskId)) {
+  //   //   setTaskList((prevState) =>
+  //   //     prevState.filter((task) => task.id !== item.taskId)
+  //   //   )
+
+  //   //   setTaskList((prevState) => {
+  //   //     return [
+  //   //       {
+  //   //         name: item.taskName,
+  //   //         description: item.taskDescription,
+  //   //         status: item.taskStatus,
+  //   //         id: item.taskId,
+  //   //       },
+  //   //       ...prevState,
+  //   //     ].sort(sortByID)
+  //   //   })
+
+  //   //   const stringifiedTasks = JSON.stringify(taskList)
+  //   //   localStorage.setItem("tasks", stringifiedTasks)
+  //   //   console.log("localStorage Updated")
+  //   // }
+
+  //   // taskList.forEach((task) => {
+  //   //   if (task.id === item.taskId) {
+  //   //     console.log(taskList)
+  //   //     setTaskList((prevState) =>
+  //   //       prevState.filter((task) => task.id !== item.taskId)
+  //   //     )
+
+  //   //     console.log(taskList)
+
+  //   //     setTaskList((prevState) => {
+  //   //       return [
+  //   //         {
+  //   //           name: item.taskName,
+  //   //           description: item.taskDescription,
+  //   //           status: item.taskStatus,
+  //   //           id: item.taskId,
+  //   //         },
+  //   //         ...prevState,
+  //   //       ].sort(sortByID)
+  //   //     })
+
+  //   //     console.log(taskList)
+
+  //   //   }
+  //   // })
+
+  //   // if (taskList.includes(item.taskId) === false) {
+  //   //   console.log(taskList)
+  //   //   setTaskList((prevState) => {
+  //   //     return [
+  //   //       {
+  //   //         name: item.taskName,
+  //   //         description: item.taskDescription,
+  //   //         status: item.taskStatus,
+  //   //         id: taskList.length + 1,
+  //   //       },
+  //   //       ...prevState,
+  //   //     ].sort(sortByID)
+  //   //   })
+  //   // }
+
+  //   // console.log(taskList)
+
+  //   setSelected(null)
+  // }
+
+  const collapseItem = () => {
     setSelected(null)
   }
 
   let filteredTasks = []
 
-  if (props.type === "todo") {
-    filteredTasks = taskList.filter((task) => task.status === "todo")
-  } else if (props.type === "inProgress") {
-    filteredTasks = taskList.filter((task) => task.status === "inProgress")
-  } else {
-    filteredTasks = taskList.filter((task) => task.status === "done")
-  }
+  // if (props.type === "todo") {
+  //   filteredTasks = taskList.filter((task) => task.status === "todo")
+  // } else if (props.type === "inProgress") {
+  //   filteredTasks = taskList.filter((task) => task.status === "inProgress")
+  // } else {
+  //   filteredTasks = taskList.filter((task) => task.status === "done")
+  // }
 
   return (
+
     <Ul>
       {filteredTasks.map((task, i) => {
         return (
@@ -74,12 +188,17 @@ const TaskList = (props) => {
                 type={props.type}
               />
             </Div>
+
             <Div visible={selected === i ? true : false}>
               <ItemExpanded
+                id={task.id}
                 type={props.type}
                 title={task.name}
-                onDiscard={discardHandler}
-                taskList={taskList}
+                description={task.description}
+                // onDiscard={discardHandler}
+                // onSave={saveHandler}
+                // taskList={taskList}
+                collapse={collapseItem}
               />
             </Div>
           </li>

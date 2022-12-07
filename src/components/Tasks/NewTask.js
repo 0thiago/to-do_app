@@ -18,8 +18,19 @@ const Div = styled.div`
   }
 `
 const NewTask = () => {
+
+  const onDragStartHandler = item => {
+    item.dataTransfer.setData("new-item", item.target.title)
+    console.log(item.target.title)
+
+  }
+
+  const onDragOverHandler = item => {
+    item.stopPropagation()
+  }
+
   return (
-    <Div draggable>
+    <Div draggable onDragStart={onDragStartHandler} onDragOver={onDragOverHandler} title="NewTask" id="">
       <Indicator type='default' />
       <p>Start dragging this task to create a new one</p>
     </Div>

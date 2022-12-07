@@ -17,7 +17,6 @@ const Tasks = props => {
         context.taskTypes.map((task, index) => {
           return <TasksCard 
             key={index}
-            
             type={task.type}
             title={task.title}
           />

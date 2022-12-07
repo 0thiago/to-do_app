@@ -4,7 +4,7 @@ import Indicator from "../Layout/Indicator"
 import styled from "styled-components"
 
 const ItemExpandedContainer = styled.div`
-  position: static;
+  position: absolute;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -31,7 +31,6 @@ const CloseButton = styled.button`
   &:hover {
     cursor: pointer;
   }
-
 `
 
 const Title = styled.div`
@@ -67,7 +66,10 @@ const Input = styled.input`
   resize: none;
   background: #f2f2f2;
   font-size: 16px;
-  color: #00000095;
+  border: ${(props) =>
+    props.valid === false ? "2px solid red" : "2px solid #00000095"};
+  /* border-color: ${(props) =>
+    props.valid === false ? "red" : "#00000095"}; */
   margin-left: 28px;
 
   &:hover {
@@ -108,18 +110,25 @@ const BtnContainer = styled.div`
 const ItemExpanded = (props) => {
   const [titleValue, setTitleValue] = useState(props.title)
   const [descriptionValue, setDescriptionValue] = useState(props.description)
+  const [titleValid, setTitleValid] = useState(true)
 
   const titleRef = useRef()
   const descriptionRef = useRef()
 
   const onChangeTitleHandler = () => {
-    const titleInput = titleRef.current.value
-    setTitleValue(titleInput)
+    let titleInput = titleRef.current.value
   }
 
   const onChangeDescriptionHandler = () => {
-    const descriptionInput = descriptionRef.current.value
-    setDescriptionValue(descriptionInput)
+    let descriptionInput = descriptionRef.current.value
+  }
+
+  const onBlurHandler = () => {
+    if (titleRef.current.value === "") {
+      setTitleValid(false)
+    } else {
+      setTitleValid(true)
+    }
   }
 
   const onDiscardHandler = (button) => {
@@ -127,27 +136,50 @@ const ItemExpanded = (props) => {
       taskName: props.title,
       button: button,
     })
+    props.collapse()
   }
 
   const onSaveHandler = (button) => {
     button.preventDefault()
-    props.onSave({
-      taskId: props.id,
-      taskName: titleValue,
-      taskDescription: descriptionValue,
-      taskStatus: props.type,
-      button: button,
-    })
+
+    if (titleRef.current.value === "") {
+      setTitleValid(false)
+    } else {
+      setTitleValid(true)
+      props.onSave({
+        taskId: props.id,
+        taskName: titleRef.current.value,
+        taskDescription: descriptionRef.current.value,
+        taskStatus: props.type,
+        button: button,
+      })
+      props.collapse()
+    }
+
+
   }
 
   return (
     <ItemExpandedContainer>
       <CloseButton onClick={props.collapse}>X</CloseButton>
-      {
-        props.input === false
-        ? <Title> <Indicator type={props.type} /><H3>{props.title}</H3></Title>
-        : <Input ref={titleRef} onChange={onChangeTitleHandler} name="taskTitle" id="taskTitle" value={titleValue} type="text" placeholder={`${ props.title || 'Insert here the task name' }`}/>
-      }      
+      {props.input === false ? (
+        <Title>
+          {" "}
+          <Indicator type={props.type} />
+          <H3>{props.title}</H3>
+        </Title>
+      ) : (
+        <Input
+          ref={titleRef}
+          onChange={onChangeTitleHandler}
+          onBlur={onBlurHandler}
+          valid={titleValid}
+          name="taskTitle"
+          id="taskTitle"
+          type="text"
+          placeholder={`${props.title || "Insert here the task name"}`}
+        />
+      )}
       <Content>
         <Hr />
         <Textarea
@@ -158,7 +190,7 @@ const ItemExpanded = (props) => {
           value={descriptionValue}
           cols="30"
           rows="10"
-          placeholder={`${ props.description || 'Insert here your description' }`}
+          placeholder={`${props.description || "Insert here your description"}`}
         ></Textarea>
         <BtnContainer>
           <Button onClick={onDiscardHandler} discard>

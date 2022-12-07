@@ -22,13 +22,16 @@ const Title = styled.p`
     cursor: pointer;
   }
 `
+const onClickHandler = () => {
+  console.log('oioi')
+}
 
 const Item = (props) => {
   return (
     <>
       <Div>
         <Span>
-          <Indicator type={props.type} />
+          <Indicator type={props.type} onClick={onClickHandler}/>
         </Span>
         <Title onClick={props.onClick}>{props.title}</Title>
       </Div>
