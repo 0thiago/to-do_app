@@ -29,12 +29,10 @@ const onClickHandler = () => {
 const Item = (props) => {
   return (
     <>
-      <Div>
-        <Span>
-          <Indicator type={props.type} onClick={onClickHandler}/>
-        </Span>
+  
+        
         <Title onClick={props.onClick}>{props.title}</Title>
-      </Div>
+   
     </>
   )
 }

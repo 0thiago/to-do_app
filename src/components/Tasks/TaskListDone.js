@@ -3,6 +3,7 @@ import styled from "styled-components"
 import Item from "./Item"
 import ItemExpanded from "./ItemExpanded"
 import TaskAdd from "./TaskAdd"
+import Indicator from "../Layout/Indicator"
 
 const Ul = styled.ul`
   margin: 15px 0;
@@ -12,6 +13,19 @@ const Ul = styled.ul`
 const Div = styled.div`
   width: fit-content;
   display: ${(props) => (props.visible === true ? "block" : "none")};
+`
+
+const DivItem = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 8px 16px 8px 12px;
+`
+
+const Span = styled.span`
+  &:hover {
+    cursor: pointer;
+  }
 `
 
 const TaskList = (props) => {
@@ -114,12 +128,10 @@ const TaskList = (props) => {
     console.log(currentTask)
 
     item.dataTransfer.setData("drag-item", item.target.id)
-
   }
 
   const onDragOverHandler = (item) => {
     console.log(item.target)
-    
   }
 
   const onDragEndHandler = (item) => {
@@ -179,14 +191,20 @@ const TaskList = (props) => {
               onDragEnd={onDragEndHandler}
               onDragLeave={onDragLeaveHandler}
             >
-              <Item
-                onClick={() => toggle(i)}
-                title={task.name}
-                type={props.type}
-              />
+              <DivItem>
+                <Span>
+                  <Indicator type={props.type} onClick={props.onClickIcon} />
+                </Span>
+                <Item
+                  onClick={() => toggle(i)}
+                  title={task.name}
+                  type={props.type}
+                />
+              </DivItem>
             </Div>
             <Div visible={selected === i ? true : false}>
               <ItemExpanded
+                key={Math.random().toString()}
                 id={task.id}
                 type={props.type}
                 title={task.name}
