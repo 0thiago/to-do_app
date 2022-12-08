@@ -24,12 +24,8 @@ const TaskListCard = styled.div`
 
 const TasksCard = (props) => {
   const [modalIsVisible, setModalIsVisible] = useState(false)
-  const [collapseAll, setCollapseAll] = useState(false)
   const [refreshList, setRefreshList] = useState("")
   const [taskListUpdated, setTaskListUpdated] = useState([])
-  const [checkContext, setCheckContext] = useState('')
-
-  const context = useContext(TaskListContext)
 
   const sortByID = (a, b) => {
     if (a.id === b.id) {
@@ -74,30 +70,15 @@ const TasksCard = (props) => {
     setModalIsVisible(false)
   }
 
-  const onClickHandler = () => {
-    // setCollapseAll(true)
-    // console.log('click parent')
-  }
-
-  useEffect(()=>{}, [
-
-  ])
+  useEffect(() => {}, [])
 
   const updateList = (taskList) => {
-
     setTaskListUpdated(taskList)
-
   }
-
-  console.log(checkContext)
 
   return (
     <>
-      <TaskListCard
-        onDrop={onDropHandler}
-        onDragOver={onDragOverHandler}
-        onClick={onClickHandler}
-      >
+      <TaskListCard onDrop={onDropHandler} onDragOver={onDragOverHandler}>
         <TaskHeader title={props.title} />
 
         {props.title === "Tasks To Do" && (
@@ -105,7 +86,6 @@ const TasksCard = (props) => {
             itemDropped={refreshList}
             title={props.title}
             type={props.type}
-            collapseAll={collapseAll}
             taskAdd={modalIsVisible}
             closeModalHandler={closeModalHandler}
           />
@@ -117,7 +97,6 @@ const TasksCard = (props) => {
             title={props.title}
             itemDropped={refreshList}
             type={props.type}
-            collapseAll={collapseAll}
             taskAdd={modalIsVisible}
             closeModalHandler={closeModalHandler}
           />
@@ -126,19 +105,13 @@ const TasksCard = (props) => {
         {props.title === "Tasks Done" && (
           <TaskListDone
             newList={taskListUpdated}
-            checkContext={checkContext}
             itemDropped={refreshList}
             title={props.title}
             type={props.type}
-            collapseAll={collapseAll}
             taskAdd={modalIsVisible}
             closeModalHandler={closeModalHandler}
           />
         )}
-
-        {/* {<TaskListInProgress type={props.type} collapseAll={collapseAll} />} */}
-        {/* {<TaskListDone type={props.type} collapseAll={collapseAll} />} */}
-        {/* {modalIsVisible && <TaskAdd closeModal={closeModalHandler} type={props.type} collapse={closeModalHandler} />} */}
       </TaskListCard>
     </>
   )
