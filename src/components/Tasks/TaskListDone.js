@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef, useContext } from "react"
 import styled from "styled-components"
 import Item from "./Item"
 import ItemExpanded from "./ItemExpanded"
 import TaskAdd from "./TaskAdd"
 import Indicator from "../Layout/Indicator"
+import TaskListContext from "../../context/taskList-context"
 
 const Ul = styled.ul`
   margin: 15px 0;
@@ -41,6 +42,8 @@ const TaskList = (props) => {
     }
   })
 
+  const context = useContext(TaskListContext)
+
   useEffect(() => {
     let storedItems = JSON.parse(localStorage.getItem("done"))
 
@@ -50,6 +53,19 @@ const TaskList = (props) => {
       setTaskList(storedItems)
     }
   }, [props.itemDropped])
+
+
+  useEffect(() => {
+
+    let storedItems = JSON.parse(localStorage.getItem("taskToUpdate"))
+
+    if (storedItems === null) {
+      return []
+    } else {
+      setTaskList(storedItems)
+    }
+
+  }, [props.checkContext])
 
   const toggle = (i) => {
     if (selected === i) {
@@ -62,7 +78,7 @@ const TaskList = (props) => {
   useEffect(() => {
     const stringifiedTasks = JSON.stringify(taskList)
     localStorage.setItem("done", stringifiedTasks)
-    console.log("localStorage Updated")
+
   }, [taskList])
 
   const discardHandler = (item) => {
@@ -131,7 +147,7 @@ const TaskList = (props) => {
   }
 
   const onDragOverHandler = (item) => {
-    console.log(item.target)
+    console.log(item)
   }
 
   const onDragEndHandler = (item) => {
@@ -143,6 +159,22 @@ const TaskList = (props) => {
       return []
     } else {
       setTaskList(storedItems)
+    }
+  }
+
+  const onClickChangeStatusHandler = (item) => {
+    const currentTask = JSON.parse(item.target.dataset.task)
+
+    let confirmation = window.confirm(
+      `Do you wanto to remove "${currentTask.name}" ?`
+    )
+    if (confirmation === true) {
+      setTaskList((prevState) =>
+        prevState.filter((task) => task.name !== currentTask.name)
+      )
+      console.log(taskList)
+    } else {
+      console.log("nao quis deletar")
     }
   }
 
@@ -193,7 +225,18 @@ const TaskList = (props) => {
             >
               <DivItem>
                 <Span>
-                  <Indicator type={props.type} onClick={props.onClickIcon} />
+                  <Indicator
+                    id="oi"
+                    key={Math.random().toString()}
+                    task={`${JSON.stringify({
+                      name: task.name,
+                      id: task.id,
+                      status: task.status,
+                      description: task.description,
+                    })}`}
+                    type={props.type}
+                    onClick={onClickChangeStatusHandler}
+                  />
                 </Span>
                 <Item
                   onClick={() => toggle(i)}

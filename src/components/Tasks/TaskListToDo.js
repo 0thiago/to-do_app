@@ -62,7 +62,7 @@ const TaskList = (props) => {
   useEffect(() => {
     const stringifiedTasks = JSON.stringify(taskList)
     localStorage.setItem("todo", stringifiedTasks)
-    console.log("localStorage Updated")
+
   }, [taskList])
 
   const discardHandler = (item) => {

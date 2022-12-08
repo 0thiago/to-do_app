@@ -25,9 +25,9 @@ const TaskListCard = styled.div`
 const TasksCard = (props) => {
   const [modalIsVisible, setModalIsVisible] = useState(false)
   const [collapseAll, setCollapseAll] = useState(false)
-  const [refreshList, setRefreshList] = useState('')
-
-  useEffect(() => {}, [])
+  const [refreshList, setRefreshList] = useState("")
+  const [taskListUpdated, setTaskListUpdated] = useState([])
+  const [checkContext, setCheckContext] = useState('')
 
   const context = useContext(TaskListContext)
 
@@ -61,11 +61,9 @@ const TasksCard = (props) => {
       localStorage.setItem(newStatus, taskListNewUpdated)
 
       setRefreshList((prevState) => {
-        return prevState+1
+        return prevState + 1
       })
     }
-
-   
   }
 
   const onDragOverHandler = (event) => {
@@ -80,6 +78,21 @@ const TasksCard = (props) => {
     // setCollapseAll(true)
     // console.log('click parent')
   }
+
+  useEffect(()=>{}, [
+
+  ])
+
+  const updateList = (taskList) => {
+    console.log('fired')
+
+    setCheckContext((prevState) => {
+      return prevState + 1
+    })
+
+  }
+
+  console.log(checkContext)
 
   return (
     <>
@@ -103,6 +116,7 @@ const TasksCard = (props) => {
 
         {props.title === "Tasks in Progress" && (
           <TaskListInProgress
+            onIndicatorClick={updateList}
             title={props.title}
             itemDropped={refreshList}
             type={props.type}
@@ -114,6 +128,8 @@ const TasksCard = (props) => {
 
         {props.title === "Tasks Done" && (
           <TaskListDone
+            newList={taskListUpdated}
+            checkContext={checkContext}
             itemDropped={refreshList}
             title={props.title}
             type={props.type}

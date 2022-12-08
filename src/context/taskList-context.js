@@ -74,10 +74,6 @@ const TaskListContext = React.createContext({
   ],
 
   newTaskList: [],
-
-  getTaskList: () => {
-    TaskListContext.newTaskList = JSON.parse(localStorage.getItem('tasks'))
-  }
 })
 
 export default TaskListContext

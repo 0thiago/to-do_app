@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useContext } from "react"
 import styled from "styled-components"
 import Item from "./Item"
 import ItemExpanded from "./ItemExpanded"
 import TaskAdd from "./TaskAdd"
 import Indicator from "../Layout/Indicator"
+import TaskListContext from "../../context/taskList-context"
 
 const Ul = styled.ul`
   margin: 15px 0;
@@ -41,6 +42,8 @@ const TaskList = (props) => {
     }
   })
 
+  const context = useContext(TaskListContext)
+
   useEffect(() => {
     let storedItems = JSON.parse(localStorage.getItem("inProgress"))
 
@@ -62,7 +65,7 @@ const TaskList = (props) => {
   useEffect(() => {
     const stringifiedTasks = JSON.stringify(taskList)
     localStorage.setItem("inProgress", stringifiedTasks)
-    console.log("localStorage Updated")
+
   }, [taskList])
 
   const discardHandler = (item) => {
@@ -131,7 +134,7 @@ const TaskList = (props) => {
   }
 
   const onDragOverHandler = (item) => {
-    console.log(item.target)
+    console.log(item)
   }
 
   const onDragEndHandler = (item) => {
@@ -144,6 +147,24 @@ const TaskList = (props) => {
     } else {
       setTaskList(storedItems)
     }
+  }
+
+  const onClickChangeStatusHandler = (item) => {
+    const currentTask = JSON.parse(item.target.dataset.task)
+
+    currentTask.status = "done"
+
+    let oldTaskList = JSON.parse(localStorage.getItem("done"))
+
+    let oldTaskListUpdated = [currentTask, ...oldTaskList].sort(sortByID)
+
+    let oldTaskJSON = JSON.stringify(oldTaskListUpdated)
+
+    let i = 0
+
+    localStorage.setItem('taskToUpdate', oldTaskJSON)
+
+    props.onIndicatorClick(i+1)    
   }
 
   const onDragLeaveHandler = (item) => {
@@ -193,7 +214,18 @@ const TaskList = (props) => {
             >
               <DivItem>
                 <Span>
-                  <Indicator type={props.type} onClick={props.onClickIcon} />
+                  <Indicator
+                    id="oi"
+                    key={Math.random().toString()}
+                    task={`${JSON.stringify({
+                      name: task.name,
+                      id: task.id,
+                      status: task.status,
+                      description: task.description,
+                    })}`}
+                    type={props.type}
+                    onClick={onClickChangeStatusHandler}
+                  />
                 </Span>
                 <Item
                   onClick={() => toggle(i)}

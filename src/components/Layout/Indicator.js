@@ -16,7 +16,7 @@ const Indicator = (props) => {
     indicatorType = ElipseOpen
   }
 
-  return <Img src={indicatorType} alt="indicator" />
+  return <Img onClick={props.onClick} src={indicatorType} alt="indicator" data-task={props.task} />
 }
 
 export default Indicator
