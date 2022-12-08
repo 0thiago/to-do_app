@@ -164,7 +164,8 @@ const TaskList = (props) => {
 
     localStorage.setItem('taskToUpdate', oldTaskJSON)
 
-    props.onIndicatorClick(i+1)    
+
+    props.onIndicatorClick(oldTaskListUpdated)    
   }
 
   const onDragLeaveHandler = (item) => {

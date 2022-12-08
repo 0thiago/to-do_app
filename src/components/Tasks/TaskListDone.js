@@ -55,17 +55,17 @@ const TaskList = (props) => {
   }, [props.itemDropped])
 
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    let storedItems = JSON.parse(localStorage.getItem("taskToUpdate"))
+  //   let storedItems = props.newList
 
-    if (storedItems === null) {
-      return []
-    } else {
-      setTaskList(storedItems)
-    }
+  //   if (storedItems === null) {
+  //     return []
+  //   } else {
+  //     setTaskList(storedItems)
+  //   }
 
-  }, [props.checkContext])
+  // }, [props.newList])
 
   const toggle = (i) => {
     if (selected === i) {

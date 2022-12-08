@@ -84,11 +84,8 @@ const TasksCard = (props) => {
   ])
 
   const updateList = (taskList) => {
-    console.log('fired')
 
-    setCheckContext((prevState) => {
-      return prevState + 1
-    })
+    setTaskListUpdated(taskList)
 
   }
 
