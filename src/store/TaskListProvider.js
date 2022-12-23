@@ -2,8 +2,13 @@ import React, { useEffect, useReducer, useState } from 'react';
 
 import TaskListContext from './taskList-context';
 
+let storedList = JSON.parse(localStorage.getItem('taskList'));
+if (storedList === null) {
+  storedList = [];
+};
+
 const initialState = {
-  taskList: [],
+  taskList: storedList,
   taskRemovedSuccessfully: false,
 };
 
@@ -99,6 +104,12 @@ const TaskListProvider = (props) => {
 
   const [selectedTask, setSelectedTask] = useState(null);
   const [closeNewTask, setCloseNewTask] = useState(false);
+
+  useEffect(()=>{
+    let listToStore = JSON.stringify(taskListState.taskList); 
+    localStorage.setItem('taskList', listToStore);
+
+  }, [taskListState.taskList]);
 
   useEffect(() => {
     if (taskListState.taskRemovedSuccessfully === true) {
