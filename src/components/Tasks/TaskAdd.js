@@ -1,208 +1,146 @@
-import React, { useRef, useState } from "react"
-import Button from "../UI/Button"
-import Indicator from "../Layout/Indicator"
-import styled from "styled-components"
+import React, { useRef, useState, useEffect, useContext } from 'react';
 
-const ItemExpandedContainer = styled.div`
+import TaskListContext from '../../store/taskList-context';
+import Button from '../UI/Button';
+import Input from '../UI/Input';
+import Textarea from '../UI/Textarea';
+import styled from 'styled-components';
+
+const FormContainer = styled.form`
   position: absolute;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   align-items: flex-start;
   padding: 20px 14px 14px 12px;
   gap: 8px;
   width: 345.33px;
-  height: 181px;
+  height: 200px;
   background: #f2f2f2;
   border-radius: 20px;
   z-index: 100;
-`
-
-const CloseButton = styled.button`
-  background-color: #d64b4b;
-  color: white;
-  border: none;
-  padding: 1.5px 6px;
-  border-radius: 5px;
-  font-size: 10px;
-  font-weight: bold;
-  margin-left: 300px;
-
-  &:hover {
-    cursor: pointer;
-  }
-`
-
-const Title = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  width: 100%;
-  height: 27px;
-`
-
-const H3 = styled.h3`
-  width: 179px;
-`
+`;
 
 const Content = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
   align-items: flex-start;
   padding: 0px 0px 0px 28px;
   gap: 12px;
   width: 319.33px;
-  height: 112px;
+  height: 152px;
 
   ${(props) => props.children}
-`
+`;
+
+const IptContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+`;
+
+const Div = styled.div`
+  height: 20px;
+`;
+
 const Hr = styled.hr`
   width: 57px;
   border: 0.5px solid #00000045;
-`
-
-const Input = styled.input`
-  border: none;
-  resize: none;
-  background: #f2f2f2;
-  font-size: 16px;
-  border: ${(props) =>
-    props.valid === false ? "2px solid red" : "2px solid #00000095"};
-  /* border-color: ${(props) =>
-    props.valid === false ? "red" : "#00000095"}; */
-  margin-left: 28px;
-
-  &:hover {
-    cursor: text;
-  }
-
-  &:focus {
-    color: black;
-    text-indent: 5px;
-  }
-`
-
-const Textarea = styled.textarea`
-  border: none;
-  resize: none;
-  background: #f2f2f2;
-  font-size: 16px;
-  color: #00000095;
-
-  &:hover {
-    cursor: text;
-  }
-
-  &:focus {
-    color: black;
-    text-indent: 5px;
-  }
-`
+`;
 
 const BtnContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-start;
   gap: 8px;
-  margin-bottom: 5px;
-`
+  margin-top: 20px;
+`;
 
-const ItemExpanded = (props) => {
-  const [titleValue, setTitleValue] = useState(props.title)
-  const [descriptionValue, setDescriptionValue] = useState(props.description)
-  const [titleValid, setTitleValid] = useState(true)
+const TaskAdd = (props) => {
+  const ctx = useContext(TaskListContext);
 
-  const titleRef = useRef()
-  const descriptionRef = useRef()
+  const [titleValid, setTitleValid] = useState(true);
 
-  const onChangeTitleHandler = () => {
-    let titleInput = titleRef.current.value
-  }
+  const titleRef = useRef();
+  const descriptionRef = useRef();
 
-  const onChangeDescriptionHandler = () => {
-    let descriptionInput = descriptionRef.current.value
-  }
+  useEffect(() => {
+    titleRef.current.focus();
+  }, []);
 
   const onBlurHandler = () => {
-    if (titleRef.current.value === "") {
-      setTitleValid(false)
-    } else {
-      setTitleValid(true)
+    if (titleRef.current.value !== '') {
+      setTitleValid(true);
     }
-  }
+  };
 
-  const onDiscardHandler = (button) => {
-    props.onDiscard({
-      taskName: props.title,
-      button: button,
-    })
-    props.collapse()
-  }
+  const onSubmitHandler = (button) => {
+    button.preventDefault();
 
-  const onSaveHandler = (button) => {
-    button.preventDefault()
+    let date = new Date().toLocaleString();
+    let taskId = Date.parse(date);
+    let taskCreationDate = date;
 
-    if (titleRef.current.value === "") {
-      setTitleValid(false)
+    if (titleRef.current.value === '') {
+      setTitleValid(false);
     } else {
-      setTitleValid(true)
-      props.onSave({
-        taskId: props.id,
-        taskName: titleRef.current.value,
-        taskDescription: descriptionRef.current.value,
-        taskStatus: props.type,
-        button: button,
-      })
-      props.collapse()
+      setTitleValid(true);
+
+      const task = {
+        id: taskId,
+        name: titleRef.current.value,
+        description: descriptionRef.current.value,
+        status: props.type,
+        creationDate: taskCreationDate,
+      };
+
+      ctx.addTask(task);
+
+      props.collapse();
     }
-
-
-  }
+  };
 
   return (
-    <ItemExpandedContainer>
-      <CloseButton onClick={props.collapse}>X</CloseButton>
-      {props.input === false ? (
-        <Title>
-          {" "}
-          <Indicator type={props.type} />
-          <H3>{props.title}</H3>
-        </Title>
-      ) : (
-        <Input
-          ref={titleRef}
-          onChange={onChangeTitleHandler}
-          onBlur={onBlurHandler}
-          valid={titleValid}
-          name="taskTitle"
-          id="taskTitle"
-          type="text"
-          placeholder={`${props.title || "Insert here the task name"}`}
-        />
-      )}
+    <FormContainer onSubmit={onSubmitHandler}>
       <Content>
-        <Hr />
-        <Textarea
-          ref={descriptionRef}
-          onChange={onChangeDescriptionHandler}
-          name="taskDescription"
-          id="taskDescription"
-          value={descriptionValue}
-          cols="30"
-          rows="10"
-          placeholder={`${props.description || "Insert here your description"}`}
-        ></Textarea>
+        <h3>New Task</h3>
+        <IptContainer>
+          <Input
+            ref={titleRef}
+            onBlur={onBlurHandler}
+            valid={titleValid}
+            input={{
+              type: 'text',
+              placeholder: 'Insert here the task title',
+            }}
+          />
+          <Hr />
+        </IptContainer>
+        <Div>
+          <Textarea
+            ref={descriptionRef}
+            textarea={{
+              name: 'taskDescription',
+              cols: '30',
+              rows: '2',
+              placeholder: 'Insert the description here',
+            }}
+          />
+        </Div>
         <BtnContainer>
-          <Button onClick={onDiscardHandler} discard>
+          <Button
+            onClick={props.collapse}
+            discard
+          >
             Discard
           </Button>
-          <Button onClick={onSaveHandler} save>
-            Save task
-          </Button>
+          <Button save>Save task</Button>
         </BtnContainer>
       </Content>
-    </ItemExpandedContainer>
-  )
-}
+    </FormContainer>
+  );
+};
 
-export default ItemExpanded
+export default TaskAdd;

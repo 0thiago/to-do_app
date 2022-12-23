@@ -2,13 +2,13 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Recoleta DEMO";
+  font-family: 'Recoleta DEMO';
 }
 
 @font-face {
   font-family: 'Recoleta DEMO';
-  src: local("Recoleta Demo"),
-  url('./fonts/Recoleta/Recoleta-RegularDEMO.ttf') format('truetype');
+  src: local('Recoleta Demo'),
+    url('./fonts/Recoleta/Recoleta-RegularDEMO.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -18,9 +18,7 @@ body {
   background-color: rgb(238, 238, 238);
 }
 
-.o{
+.o {
   box-shadow: 0 0 0 #00000041;
   color: #d64b4b;
 }
-
-

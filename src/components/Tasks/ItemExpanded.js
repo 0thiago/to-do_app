@@ -31,7 +31,6 @@ const CloseButton = styled.button`
   &:hover {
     cursor: pointer;
   }
-
 `
 
 const Title = styled.div`
@@ -143,11 +142,23 @@ const ItemExpanded = (props) => {
   return (
     <ItemExpandedContainer>
       <CloseButton onClick={props.collapse}>X</CloseButton>
-      {
-        props.input === false
-        ? <Title> <Indicator type={props.type} /><H3>{props.title}</H3></Title>
-        : <Input ref={titleRef} onChange={onChangeTitleHandler} name="taskTitle" id="taskTitle" value={titleValue} type="text" placeholder={`${ props.title || 'Insert here the task name' }`}/>
-      }      
+      {props.input === false ? (
+        <Title>
+          {" "}
+          <Indicator type={props.type} />
+          <H3>{props.title}</H3>
+        </Title>
+      ) : (
+        <Input
+          ref={titleRef}
+          onChange={onChangeTitleHandler}
+          name="taskTitle"
+          id="taskTitle"
+          value={titleValue}
+          type="text"
+          placeholder={`${props.title || "Insert here the task name"}`}
+        />
+      )}
       <Content>
         <Hr />
         <Textarea
@@ -158,7 +169,7 @@ const ItemExpanded = (props) => {
           value={descriptionValue}
           cols="30"
           rows="10"
-          placeholder={`${ props.description || 'Insert here your description' }`}
+          placeholder={`${props.description || "Insert here your description"}`}
         ></Textarea>
         <BtnContainer>
           <Button onClick={onDiscardHandler} discard>

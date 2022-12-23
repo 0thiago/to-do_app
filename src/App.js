@@ -1,25 +1,54 @@
-import React, { useContext} from "react"
+import React, { useEffect, useContext, useState } from 'react';
 
-import Header from "./components/Layout/Header"
-import NewTask from "./components/Tasks/NewTask"
-import Tasks from "./components/Tasks/Tasks"
-import Wrapper from "./components/Layout/Wrapper"
-import TaskListContext from "../src/context/taskList-context"
+import TaskListContext from './store/taskList-context';
+import TaskListProvider from './store/TaskListProvider';
+import Header from './components/Layout/Header';
+import NewTask from './components/Tasks/NewTask';
+import Tasks from './components/Tasks/Tasks';
+import Wrapper from './components/Layout/Wrapper';
+import RemoveTaskModal from './components/UI/RemoveTaskModal';
+import SuccessfullyRemovedModal from './components/UI/SuccessfullyRemovedModal';
 
 const App = () => {
-  const context = useContext(TaskListContext)
+  const ctx = useContext(TaskListContext);
+  const [removeTaskModalIsShown, setRemoveTaskModalIsShown] = useState(false);
+  const [successfullyRemoved, setSuccessfullyRemoved] = useState(false);
+  const [task, setTask] = useState();
 
-  // let tasksJSON = JSON.stringify(context.taskList)
+  const showRemoveTaskModalHandler = (task) => {
+    setRemoveTaskModalIsShown(true);
+    setTask(task);
+  };
 
-  // localStorage.setItem('tasks', tasksJSON)
+  const hideRemoveTaskModalHandler = () => {
+    setRemoveTaskModalIsShown(false);
+  };
+
+  const hideTaskRemovedModalHandler = () => {
+    setSuccessfullyRemoved(false);
+  };
+
+  const showTaskRemovedSuccessfullyHandler = () => {
+    setRemoveTaskModalIsShown(false);
+    setSuccessfullyRemoved(true);
+  };
 
   return (
-    <Wrapper>
-      <Header />
-      <NewTask />
-      <Tasks />
-    </Wrapper>
-  )
-}
+    <TaskListProvider
+      onShowRemoveTaskModal={showRemoveTaskModalHandler}
+      onHideRemoveTaskModal={hideRemoveTaskModalHandler}
+      onHideTaskRemovedModal={hideTaskRemovedModalHandler}
+      onShowTaskRemovedSuccessfully={showTaskRemovedSuccessfullyHandler}
+    >
+      <Wrapper>
+        {removeTaskModalIsShown && <RemoveTaskModal task={task} />}
+        {successfullyRemoved && <SuccessfullyRemovedModal task={task} />}
+        <Header />
+        <NewTask />
+        <Tasks />
+      </Wrapper>
+    </TaskListProvider>
+  );
+};
 
-export default App
+export default App;
